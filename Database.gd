@@ -7,8 +7,20 @@ var db_name = "res://DataStore/database" # Path to Database
 func _ready():
 	db = SQLite.new()
 	db.path = db_name
+	print("🎲 Database initialized")
 	#HandleCreateAccount("fduiashsf", "fduiashsf", "fduiashsf@ava.com")
 	#HandleLogin("fduiashsf", "fduiashsf")
+
+func AccountExist(username):
+	db.open_db()
+	var tableName = "accounts"
+	db.query("SELECT * FROM " + tableName + " WHERE username = '" + username + "';")
+	
+	if (db.query_result.size() == 0):
+		db.close_db()
+		return false
+	db.close_db()
+	return true
 
 func HandleLogin(username, password):
 	db.open_db()
@@ -19,14 +31,14 @@ func HandleLogin(username, password):
 		print("Account does not exist")
 		return
 	
-	var account = db.query_result[0]
+	var account: Player = db.query_result[0]
 	var retrieved_salt = account.salt
 	var hashed_password = GenerateHashedPassword(password, retrieved_salt)
 	var isPasswordCorrect = account.password == hashed_password
 	db.close_db()
 	return isPasswordCorrect
 
-func HandleCreateAccount(username, password, email):
+func AddAccount(username, password, email = ""):
 	db.open_db()
 	var tableName = "accounts"
 	

@@ -32,7 +32,7 @@ func _player_connected(id):
 	# The connect signal fires before the client is added to the connected
 	# clients in multiplayer.get_peers(), so we wait for a moment.
 	await get_tree().create_timer(1).timeout
-	ServerPackets.instance_player.rpc(id, Constants.INITIAL_PLAYER_POSITION)
+#	ServerPackets.instance_player.rpc(id, Constants.INITIAL_PLAYER_POSITION)
 
 func _player_disconnected(id):
 	print("[" + str(id) + "] Connection disconnected")
