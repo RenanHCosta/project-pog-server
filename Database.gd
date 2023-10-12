@@ -31,7 +31,20 @@ func LoadPlayer(username):
 		return
 	
 	var player = db.query_result[0]
+	player.location = JSON.parse_string(player.location)
 	return player
+	
+func SavePlayer(index):
+	db.open_db()
+	var tableName = "accounts"
+	
+	var player = Globals.Players[index]
+	player.location = JSON.stringify(player.location)
+	
+	db.update_rows(tableName, "username = '" + player.username + "'", {
+		"location": player.location
+	})
+	db.close_db()
 	
 func PasswordOK(username, password):
 	db.open_db()
@@ -51,31 +64,16 @@ func PasswordOK(username, password):
 	db.close_db()
 	return isPasswordCorrect
 
-func HandleLogin(username, password):
-	db.open_db()
-	var tableName = "accounts"
-	db.query("SELECT * FROM " + tableName + " WHERE username = '" + username + "';")
-
-	if (db.query_result.size() == 0):
-		print("Account does not exist")
-		return
-	
-	var account: Player = db.query_result[0]
-	var retrieved_salt = account.salt
-	var hashed_password = GenerateHashedPassword(password, retrieved_salt)
-	var isPasswordCorrect = account.password == hashed_password
-	db.close_db()
-	return isPasswordCorrect
-
-func AddAccount(username, password, email = ""):
+func AddAccount(username, password, email = "", location = Constants.INITIAL_PLAYER_POSITION):
 	db.open_db()
 	var tableName = "accounts"
 	
+	var _location = JSON.stringify(location)
 	var salt = GenerateSalt()
 	var hashed_password = GenerateHashedPassword(password, salt)
 	
 	#db.query("INSERT INTO accounts (username, password, salt, email) VALUES ('" + username + "', '" + hashed_password + "', '" + salt + "', '" + email + "');")
-	if not db.insert_row(tableName, { "username": username, "password": hashed_password, "salt": salt, "email": email }):
+	if not db.insert_row(tableName, { "username": username, "password": hashed_password, "salt": salt, "email": email, "location": _location }):
 		print("SQL Error: " + db.error_message)
 		return false
 	db.close_db()

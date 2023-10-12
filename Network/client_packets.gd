@@ -12,8 +12,11 @@ func start():
 	get_tree().set_multiplayer(Network.multiplayer_api, self.get_path())
 
 @rpc("any_peer")
-func MovementInfo(username, direction, velocity):
+func MovementInfo(index, username, direction, velocity, position):
 	var player_id = Network.multiplayer_api.get_remote_sender_id()
+	
+	Globals.Players[index].location.x = position.x
+	Globals.Players[index].location.y = position.y
 	
 	for i in range(Globals.Players.size()):
 		if Globals.Players[i] != null:
@@ -51,7 +54,7 @@ func TryLogin(username: String, password: String):
 		
 	# Send Login Ok
 	var player_object = Database.LoadPlayer(username)
-	var player = Player.new(player_id, player_object.id, player_object.username, player_object.email, player_object.created_at)
+	var player = Player.new(player_id, player_object.id, player_object.username, player_object.email, player_object.created_at, player_object.location)
 	player.temp.isPlaying = true
 	
 	var player_index = null

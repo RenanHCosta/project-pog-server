@@ -14,5 +14,6 @@ func PlayerData(index):
 		"id": Globals.Players[index].id,
 		"network_id": Globals.Players[index].network_id,
 		"username": Globals.Players[index].username,
-		"created_at": Globals.Players[index].created_at
+		"created_at": Globals.Players[index].created_at,
+		"location": Globals.Players[index].location
 	}

@@ -40,5 +40,6 @@ func _player_disconnected(id):
 		if Globals.Players[i] != null:
 			if Globals.Players[i].network_id == id:
 				ServerPackets.delete_obj.rpc(Globals.Players[i].username)
+				Database.SavePlayer(i)
 				Globals.Players[i] = null
 				break
