@@ -7,7 +7,13 @@ var password: String
 var salt: String # used for password hashing
 var email: String
 var created_at: String
-var temp: TempPlayer
+var temp = TempPlayer.new()
+var network_id: int
 
-func _ready():
-	temp = TempPlayer.new()
+# Construtor personalizado
+func _init(_network_id, _id, _username, _email, _created_at):
+	self.network_id = _network_id
+	self.id = _id
+	self.username = _username
+	self.email = _email
+	self.created_at = _created_at

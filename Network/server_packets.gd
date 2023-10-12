@@ -8,8 +8,20 @@ func start():
 	get_tree().set_multiplayer(Network.multiplayer_api, self.get_path())
 		
 
+@rpc
+func PlayerDataPacket(_player_index, _player_data):
+	pass # only implemented in client (but still has to exist here)
+
+@rpc
+func SyncPlayers(_players):
+	pass # only implemented in client (but still has to exist here)
+
+@rpc
+func LoginOk(_index):
+	pass # only implemented in client (but still has to exist here)
+	
 @rpc 
-func AlertMsg(msg):
+func AlertMsg(_msg):
 	pass # only implemented in client (but still has to exist here)
 
 @rpc
@@ -17,7 +29,7 @@ func delete_obj(_id):
 	pass # only implemented in client (but still has to exist here)
 	
 @rpc
-func instance_player(id, location):
+func instance_player(_id, _location):
 	pass # only implemented in client (but still has to exist here)
 
 @rpc

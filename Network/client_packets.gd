@@ -15,6 +15,8 @@ func start():
 func TryLogin(username: String, password: String):
 	var player_id = Network.multiplayer_api.get_remote_sender_id()
 	
+	# TODO: Check user is already logged in
+	
 	if username.strip_edges().length() < 4 or password.strip_edges().length() < 4:
 		print("Erro - O nome da conta deve ter entre 3 e 12 caracteres. Sua senha deve ter entre 3 e 20 caracteres.")
 		ServerPackets.AlertMsg.rpc_id(player_id, "Erro - O nome da conta deve ter entre 3 e 12 caracteres. Sua senha deve ter entre 3 e 20 caracteres.")
@@ -39,8 +41,33 @@ func TryLogin(username: String, password: String):
 		return
 		
 	# Send Login Ok
-	print("Login success")
-		
+	var player_object = Database.LoadPlayer(username)
+	var player = Player.new(player_id, player_object.id, player_object.username, player_object.email, player_object.created_at)
+	player.temp.isPlaying = true
+	
+	var player_index = null
+	
+	for i in range(Globals.Players.size()):
+		if Globals.Players[i] == null:
+			player_index = i
+			Globals.Players[i] = player
+			break
+	
+	ServerPackets.LoginOk.rpc_id(player_id, player_index)
+	
+	var online_players = []
+	for i in range(Globals.Players.size()):
+		if Globals.Players[i] != null:
+			online_players.append(Utils.PlayerData(i))
+			
+			if i != player_index:
+				ServerPackets.PlayerDataPacket.rpc_id(Globals.Players[i].network_id, player_index, Utils.PlayerData(player_index))
+		else:
+			online_players.append(null)
+			
+	
+	ServerPackets.SyncPlayers.rpc_id(player_id, online_players)
+
 @rpc("any_peer")
 func TryCreateAccount(username: String, password: String):
 	var player_id = Network.multiplayer_api.get_remote_sender_id()

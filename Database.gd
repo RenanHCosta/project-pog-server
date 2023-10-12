@@ -19,6 +19,19 @@ func AccountExist(username):
 		return false
 	db.close_db()
 	return true
+
+func LoadPlayer(username):
+	db.open_db()
+	var tableName = "accounts"
+	
+	db.query("SELECT * FROM " + tableName + " WHERE username = '" + username + "';")
+	
+	if (db.query_result.size() == 0):
+		print("[LoadPlayer] Error, player não encontrado na base de dados")
+		return
+	
+	var player = db.query_result[0]
+	return player
 	
 func PasswordOK(username, password):
 	db.open_db()
