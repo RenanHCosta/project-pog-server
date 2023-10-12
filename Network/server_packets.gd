@@ -9,6 +9,10 @@ func start():
 		
 
 @rpc
+func ProcessMovement(_direction, _velocity):
+	pass # only implemented in client (but still has to exist here)
+
+@rpc
 func PlayerDataPacket(_player_index, _player_data):
 	pass # only implemented in client (but still has to exist here)
 

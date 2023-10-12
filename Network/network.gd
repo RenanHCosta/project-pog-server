@@ -36,4 +36,9 @@ func _player_connected(id):
 
 func _player_disconnected(id):
 	print("[" + str(id) + "] Connection disconnected")
-	ServerPackets.delete_obj.rpc(id)
+	for i in range(Globals.Players.size()):
+		if Globals.Players[i] != null:
+			if Globals.Players[i].network_id == id:
+				ServerPackets.delete_obj.rpc(Globals.Players[i].username)
+				Globals.Players[i] = null
+				break
