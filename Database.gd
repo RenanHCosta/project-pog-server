@@ -8,8 +8,6 @@ func _ready():
 	db = SQLite.new()
 	db.path = db_name
 	print("🎲 Database initialized")
-	#HandleCreateAccount("fduiashsf", "fduiashsf", "fduiashsf@ava.com")
-	#HandleLogin("fduiashsf", "fduiashsf")
 
 func AccountExist(username):
 	db.open_db()
@@ -21,6 +19,24 @@ func AccountExist(username):
 		return false
 	db.close_db()
 	return true
+	
+func PasswordOK(username, password):
+	db.open_db()
+	var tableName = "accounts"
+	var passwordField = "password"
+	var saltField = "salt"
+	db.query("SELECT " + passwordField + ", " + saltField + " FROM " + tableName + " WHERE username = '" + username + "';")
+	
+	if (db.query_result.size() == 0):
+		print("Account does not exist")
+		return
+	
+	var query_password = db.query_result[0].password
+	var retrieved_salt = db.query_result[0].salt
+	var hashed_password = GenerateHashedPassword(password, retrieved_salt)
+	var isPasswordCorrect = hashed_password == query_password
+	db.close_db()
+	return isPasswordCorrect
 
 func HandleLogin(username, password):
 	db.open_db()
