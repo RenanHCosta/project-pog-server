@@ -12,6 +12,26 @@ func start():
 	get_tree().set_multiplayer(Network.multiplayer_api, self.get_path())
 
 @rpc("any_peer")
+func SendMessage(player_index, message_type: Constants.MessageTypes, msg: String):
+	match message_type:
+		Constants.MessageTypes.WorldMessage:
+			for i in range(Globals.Players.size()):
+				if Globals.Players[i] != null:
+					if Globals.Players[i].temp.isPlaying:
+						ServerPackets.ChatMessage.rpc_id(Globals.Players[i].network_id, Globals.Players[player_index].username, msg)
+						
+		Constants.MessageTypes.NearbyMessage:
+			pass
+
+@rpc("any_peer")
+func Logout(index):
+	if Globals.Players[index] != null:
+		if Globals.Players[index].network_id == Network.multiplayer_api.get_remote_sender_id():
+			Database.SavePlayer(index)
+			ServerPackets.delete_obj.rpc(Globals.Players[index].username)
+			Globals.Players[index] = null
+
+@rpc("any_peer")
 func MovementInfo(index, username, direction, velocity, position):
 	var player_id = Network.multiplayer_api.get_remote_sender_id()
 	
