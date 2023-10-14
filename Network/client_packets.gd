@@ -12,6 +12,18 @@ func start():
 	get_tree().set_multiplayer(Network.multiplayer_api, self.get_path())
 
 @rpc("any_peer")
+func AttackInfo(index, username, is_attacking):
+	var player_id = Network.multiplayer_api.get_remote_sender_id()
+		
+	Globals.Players[index].temp.is_attacking = is_attacking
+
+	for i in range(Globals.Players.size()):
+		if Globals.Players[i] != null:
+			if Globals.Players[i].network_id != player_id:
+				ServerPackets.ProcessAttack.rpc_id(Globals.Players[i].network_id, username, is_attacking)
+
+
+@rpc("any_peer")
 func MovementInfo(index, username, direction, velocity, position):
 	var player_id = Network.multiplayer_api.get_remote_sender_id()
 	
