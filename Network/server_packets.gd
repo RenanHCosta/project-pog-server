@@ -11,6 +11,10 @@ func start():
 @rpc
 func ChatMessage(_msg):
 	pass # only implemented in client (but still has to exist here)
+
+@rpc
+func ProcessAttack(_username, _is_attacking):
+	pass # only implemented in client (but still has to exist here)
 	
 @rpc
 func ProcessMovement(_direction, _velocity):
