@@ -12,3 +12,9 @@ const INITIAL_PLAYER_POSITION := {"x": 100, "y": 100}
 # String constants
 const NAME_LENGTH: int = 20
 const ACCOUNT_LENGTH: int = 12
+
+# Enumerations
+enum MessageTypes {
+	WorldMessage = 1,
+	NearbyMessage
+}
