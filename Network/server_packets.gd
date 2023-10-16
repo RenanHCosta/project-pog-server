@@ -25,11 +25,7 @@ func PlayerDataPacket(_player_index, _player_data):
 	pass # only implemented in client (but still has to exist here)
 
 @rpc
-func SyncPlayers(_players):
-	pass # only implemented in client (but still has to exist here)
-
-@rpc
-func LoginOk(_index):
+func LoginOk(_index, _players):
 	pass # only implemented in client (but still has to exist here)
 	
 @rpc 
@@ -37,13 +33,11 @@ func AlertMsg(_msg):
 	pass # only implemented in client (but still has to exist here)
 
 @rpc
-func delete_obj(_id):
+func update_player_transform(_player_id, _direction, _position):
 	pass # only implemented in client (but still has to exist here)
 	
 @rpc
-func instance_player(_id, _location):
+func delete_obj(_id):
 	pass # only implemented in client (but still has to exist here)
+	
 
-@rpc
-func update_player_transform(_player_id, _direction, _position):
-	pass # only implemented in client (but still has to exist here)

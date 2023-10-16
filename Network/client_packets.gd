@@ -18,10 +18,24 @@ func SendMessage(player_index, message_type: Constants.MessageTypes, msg: String
 			for i in range(Globals.Players.size()):
 				if Globals.Players[i] != null:
 					if Globals.Players[i].temp.isPlaying:
-						ServerPackets.ChatMessage.rpc_id(Globals.Players[i].network_id, Globals.Players[player_index].username, msg)
+						ServerPackets.ChatMessage.rpc_id(Globals.Players[i].network_id, Globals.Players[player_index].username, msg, message_type)
 						
 		Constants.MessageTypes.NearbyMessage:
-			pass
+			var max_distance = 200.0
+			var player_position := Vector2(
+				Globals.Players[player_index].location.x,
+				Globals.Players[player_index].location.y
+			)
+			for i in range(Globals.Players.size()):
+				if Globals.Players[i] != null:
+					if Globals.Players[i].temp.isPlaying:
+						var other_player_position := Vector2(
+							Globals.Players[i].location.x,
+							Globals.Players[i].location.y
+						)
+						var distance = player_position.distance_to(other_player_position)
+						if distance < max_distance:
+							ServerPackets.ChatMessage.rpc_id(Globals.Players[i].network_id, Globals.Players[player_index].username, msg, message_type)
 
 @rpc("any_peer")
 func Logout(index):
@@ -96,8 +110,6 @@ func TryLogin(username: String, password: String):
 			Globals.Players[i] = player
 			break
 	
-	ServerPackets.LoginOk.rpc_id(player_id, player_index)
-	
 	var online_players = []
 	for i in range(Globals.Players.size()):
 		if Globals.Players[i] != null:
@@ -108,8 +120,9 @@ func TryLogin(username: String, password: String):
 		else:
 			online_players.append(null)
 			
-	
-	ServerPackets.SyncPlayers.rpc_id(player_id, online_players)
+			
+	ServerPackets.LoginOk.rpc_id(player_id, player_index, online_players)	
+#	ServerPackets.SyncPlayers.rpc_id(player_id, online_players)
 
 @rpc("any_peer")
 func TryCreateAccount(username: String, password: String):
